@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.detwiler.hackernews.model.HnSubmission;
 
 public class SubmissionListAdapter extends PostListAdapter<HnSubmission> {
     private Context mContext;

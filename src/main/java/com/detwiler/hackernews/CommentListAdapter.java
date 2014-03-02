@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.detwiler.hackernews.model.HnComment;
-import com.detwiler.hackernews.server.HnConnection;
 
 import java.util.ArrayList;
 import java.util.List;

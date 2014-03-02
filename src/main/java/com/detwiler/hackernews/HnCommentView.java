@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.detwiler.hackernews.model.HnComment;
 
 public class HnCommentView extends RelativeLayout {
     private TextView mText;

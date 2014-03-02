@@ -1,9 +1,5 @@
 package com.detwiler.hackernews;
 
-import android.util.Log;
-import com.detwiler.hackernews.server.HnPostDocument;
-import com.detwiler.hackernews.server.HnSubmissionList;
-
 import java.io.IOException;
 import java.util.*;
 

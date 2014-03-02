@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.detwiler.hackernews.server.HnSessionManager;
-import com.detwiler.hackernews.server.HnSubmissionList;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;

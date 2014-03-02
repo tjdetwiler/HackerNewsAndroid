@@ -1,7 +1,6 @@
 package com.detwiler.hackernews;
 
 import android.widget.BaseAdapter;
-import com.detwiler.hackernews.model.HnPost;
 
 import java.util.List;
 

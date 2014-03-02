@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ListView;
-import com.detwiler.hackernews.model.HnComment;
-import com.detwiler.hackernews.server.HnPostDocument;
 
 import java.io.IOException;
 import java.util.Collections;

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.detwiler.hackernews.R;
-import com.detwiler.hackernews.model.HnSubmission;
 
 public class HnPostView extends RelativeLayout {
     private TextView mTitle;
