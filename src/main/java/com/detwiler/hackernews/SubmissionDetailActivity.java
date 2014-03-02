@@ -13,17 +13,16 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class SubmissionDetailActivity extends Activity {
-    private ListView mListView;
     private CommentListAdapter mAdapter;
-    private HnScraper mScraper = HnConnectionManager.getInstance().getScraper();
+    private HnConnectionManager mConnectionManager = HnConnectionManager.getInstance();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submission_detail);
-        mListView = (ListView) findViewById(android.R.id.list);
+        ListView listView = (ListView) findViewById(android.R.id.list);
         mAdapter = new CommentListAdapter(this);
-        mListView.setAdapter(mAdapter);
+        listView.setAdapter(mAdapter);
         initializeFromIntent();
     }
 
@@ -50,7 +49,7 @@ public class SubmissionDetailActivity extends Activity {
             @Override
             protected HnPostDocument doInBackground(final Void... voids) {
                 try {
-                    return mScraper.getPost(postId);
+                    return mConnectionManager.getPost(postId);
                 } catch (final IOException e) {
                     return null;
                 }

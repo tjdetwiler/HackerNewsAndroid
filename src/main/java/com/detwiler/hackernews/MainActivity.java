@@ -4,32 +4,72 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.detwiler.hackernews.server.HnPostListDocument;
 import com.detwiler.hackernews.server.HnSessionManager;
+import com.detwiler.hackernews.server.HnSubmissionList;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends Activity implements HnSessionManager.CredentialDelegate {
-    private ListView mListView;
+    private HnConnectionManager mConnectionManager = HnConnectionManager.getInstance();
+    private HnSubmissionList mPostList;
     private SubmissionListAdapter mAdapter;
-    private HnScraper mScraper = HnConnectionManager.getInstance().getScraper();
-    private HnPostListDocument mPostList;
+    private AtomicBoolean mLoadInProgress;
+
+    protected View getListFooterView(final ViewGroup list) {
+        View v = LayoutInflater.from(this).inflate(R.layout.view_submission_list_footer, list, false);
+        if (v == null) {
+            return null;
+        }
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                loadPostListFromServer();
+            }
+        });
+        return v;
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mListView = (ListView) findViewById(android.R.id.list);
+        ListView listView = (ListView) findViewById(android.R.id.list);
         mAdapter = new SubmissionListAdapter(this);
-        mListView.setAdapter(mAdapter);
+        listView.addFooterView(getListFooterView(listView));
+        listView.setAdapter(mAdapter);
+        mLoadInProgress = new AtomicBoolean();
+        mPostList = mConnectionManager.getSubmissionList(getCategory());
+        mAdapter.setPosts(mPostList.getSubmissionList());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        new AsyncTask<Void, Void, HnPostListDocument>() {
+        if (mPostList.getSubmissionList().size() <= 0) {
+            loadPostListFromServer();
+        }
+    }
+
+    @Override
+    public String getPasswordForUser(final String username) {
+        return "";
+    }
+
+    protected HnPostCategory getCategory() {
+        return HnPostCategory.TOP;
+    }
+
+    private void loadPostListFromServer() {
+        if (!mLoadInProgress.compareAndSet(false, true)) {
+            return;
+        }
+        new AsyncTask<Void, Void, Boolean>() {
             private ProgressDialog mDialog;
             @Override
             protected void onPreExecute() {
@@ -38,28 +78,24 @@ public class MainActivity extends Activity implements HnSessionManager.Credentia
             }
 
             @Override
-            protected HnPostListDocument doInBackground(final Void... voids) {
+            protected Boolean doInBackground(final Void... voids) {
                 try {
-                    return mScraper.getTopPosts();
+                    mPostList.more();
+                    return true;
                 } catch (final IOException e) {
-                    return null;
+                    return false;
                 }
             }
             @Override
-            protected void onPostExecute(final HnPostListDocument postList) {
+            protected void onPostExecute(final Boolean success) {
                 mDialog.dismiss();
-                if (postList == null) {
+                if (!success) {
                     Toast.makeText(MainActivity.this, "Error loading posts", Toast.LENGTH_LONG).show();
                     return;
                 }
-                mPostList = postList;
-                mAdapter.setPosts(postList.getPosts());
+                mAdapter.notifyDataSetChanged();
+                mLoadInProgress.set(false);
             }
         }.execute();
-    }
-
-    @Override
-    public String getPasswordForUser(final String username) {
-        return "";
     }
 }
